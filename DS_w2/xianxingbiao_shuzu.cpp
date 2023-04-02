@@ -41,7 +41,7 @@ void Insert(Elemtype X,int i,List PtrL){
     printf("表满了");
     return;
     }
-    if(i<1 || i>PtrL->last+2){ // 为啥不MAXSIZE-1?? last在哪定义的？？
+    if(i<1 || i>PtrL->last+2){ //last需要我自己定义MaxSize-1? typedef中？
         printf("位置不合法");
         return;
     }
@@ -123,6 +123,6 @@ P3: (26,19),(9,12),(11,8),(-13,6),(3,2),(82,0)
 
 2.1.6稀疏矩阵(十字链表还得看 没大懂)
 看summary中的线性表(顺序表和链式表的代码 如果上面的出问题了)
-看到2.2堆栈
+
 
 */

@@ -71,7 +71,7 @@ Polynomial Add(Polynomial P1, Polynomial P2){
             break;
         case 0:
             sum = P1->coef+P2->coef;
-            if(sum) Attach(sum,P1->expon,&rear); //判断系数和是否为0
+            if(sum) Attach(sum,P1->expon,&rear); //判断系数和是否为0，不为0才放进去
             P1 = P1->link;
             P2 = P2->link;
             break;
@@ -84,12 +84,14 @@ Polynomial Add(Polynomial P1, Polynomial P2){
         Attach(P2->coef,P2->expon,&rear);
     }
     rear->link = NULL;
-    temp = front;
+    temp = front;//??
     front = front->link; //另front指向结果多项式第一个非零项
     free(temp);
     return front;
 }
 Polynomial Mult(Polynomial P1, Polynomial P2){
+    //1.对多项式1的第一项进行特殊处理：
+    //用多项式1的第一项 乘以 第二个多项式的每一项
     Polynomial P,Rear,t1,t2,t;
     int c,e;
     if (!P1||!P2){
@@ -105,16 +107,20 @@ Polynomial Mult(Polynomial P1, Polynomial P2){
         t2 = t2->link;
     }
     t1 = t1->link;
+
+    //2.从第二项开始，第一个多项式的每一项 乘以 第二个多项式的每一项
     while(t1){
         t2 = P2;
-        Rear = P;
+        Rear = P; //P是答案的多项式，需要每次都从头遍历，找到正确插入位置
         while (t2){
             e = t1->expon+t2->expon;
             c = t1->coef*t2->coef;
-            while(Rear->link && Rear->link->expon > e){
+            while(Rear->link && Rear->link->expon > e){ 
+                //把结果插入到Rear中合适的位置，
+                //Rear->link 即为 P 中最后一个节点的下一个节点，也就是需要插入新节点的位置。
                 Rear = Rear->link;
             }
-            if(Rear->link && Rear->link->expon==e){
+            if(Rear->link && Rear->link->expon == e){
                 if (Rear->link->coef+c){
                     Rear->link->coef += c;
                 }
@@ -124,7 +130,7 @@ Polynomial Mult(Polynomial P1, Polynomial P2){
                     free(t);
                 }
             }
-            else{ //如果系数不想等，需要申请一个新的节点
+            else{ //如果系数不相等，需要申请一个新的节点
                 t = (Polynomial) malloc(sizeof(struct PolyNode));
                 t->coef = c;
                 t->expon = e;
@@ -136,7 +142,9 @@ Polynomial Mult(Polynomial P1, Polynomial P2){
         }
         t1 = t1->link;
     }
-    t2 = P;
+
+    //3.返回结果
+    t2 = P; //P当前指向的link是空节点，先赋给t2，再指向下一节点，最后free(t2)
     P = P->link;
     free(t2);
     return P;
@@ -149,7 +157,7 @@ void PrintPoly(Polynomial P){
         return;
     }
     while(P){
-        if (!flag){
+        if (!flag){ //!flag就是0 (非true)，只判断是否是第一项
             flag=1;
         }
         else{
@@ -203,5 +211,6 @@ b.逐项插入，将P1当前项(c1,e1)xP2当前项(c2,e2)，并插入到结果�
 4.多项式输出
 
 看到小白专场的3 加法乘及多项式输出 5:10
+练习题还有 w2 3，4 没做
 
 */
