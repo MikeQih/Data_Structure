@@ -15,12 +15,55 @@ struct TNode{//二叉树 树节点定义
     BinTree Right; //右子树
 };
 
-void PreOrderTravel(BinTree BT){ //先序遍历：1.访问根节点 2.先序遍历左子树 3.先序遍历右子树
+int PostOrderGetHeight(BinTree BT){
+    int HL,HR,MaxH; //比较左右子树的深度
     if (BT){
-        printf("%d",BT->Data);
-        PreOrderTravel(BT->Left);
-        PreOrderTravel(BT->Right);
-    } 
+        HL = PostOrderGetHeight(BT->Left);
+        HR = PostOrderGetHeight(BT->Right);
+        MaxH = (HL>HR)?HL : HR;
+        return (MaxH+1);
+    }
+    else return 0; //空树深度为0
+    
+}
+
+void LevelOrderTravel(BinTree BT){
+    Queue Q;
+    BinTree T;
+    if(!BT) return; //如果是空树，直接返回
+    Q = CreatQueue(MaxSize);
+    AddQ(Q,BT);
+    while (!IsEmpty(Q))
+    {
+        T = DeleteQ(Q);
+        printf("%d\n",T->Data);
+        if(T->Left) AddQ(Q,T->Left);
+        if(T->right) AddQ(Q,T->Right);
+    }
+    
+}
+void PreOrderTravel(BinTree BT){ //先序遍历：1.访问根节点 2.先序遍历左子树 3.先序遍历右子树
+    // if (BT){
+    //     printf("%d",BT->Data);
+    //     PreOrderTravel(BT->Left);
+    //     PreOrderTravel(BT->Right);
+    // } 
+
+    //先序遍历的非递归遍历算法
+    BinTree T,BT;
+    Stack S = CreateStack(MaxSize);
+    while(T || isEmpty(S)){
+        while(T){ //一直向左，并把沿途节点压入堆栈
+            Push(S,T);
+            T = T->left;
+        }
+        if (!IsEmpty(S)){
+            T = Pop(S);
+            printf("%5d",T->Data);
+            T = T->right;
+        }
+        
+    }
 }
 void InOrderTravel(BinTree BT){ //中序遍历：1.中序遍历左子树 2.访问根节点 3.中序遍历右子树
     if (BT){
@@ -125,7 +168,21 @@ ASL(平均成功查找次数)=(4*4+3*4+2*2+1)/11=3 (见3.1.3的图 第几层，�
 后序遍历 PostOrder：左右根(LRN) postorder 第三次路过时访问结点
 层次遍历 LevelOrder：从上到下，从左到右(一层一层地看)
 
+层序遍历：
+二叉树遍历的核心问题：二维结构的线性化
+需要一个存储结构保存暂时不访问的节点
+存储结构：堆栈，队列
+基本过程：先根节点入队。1.从队列中取出一个元素。2.访问该元素所指节点。3.若该元素所指节点的左，右孩子节点非空，则将其左，右孩子的指针顺序入队。
 
-看到3.3.2 二叉树的非递归遍历 做w2 q4
-20:50
+由两种遍历序列确定二叉树：必须有中序遍历才行。
+先序+中序：
+1.根据先序遍历序列第一个节点确定根节点
+2.根据此节点在中序遍历序列中分割出左右两个字序列
+3.对左子树和右子树分别递归使用相同的方法，继续分解
+
+同构：两棵树T1和T2，如果T1可以通过若干次左右孩子交换就变成T2，则称这两棵树是“同构”的。
+
+
+
+11:40
 */
